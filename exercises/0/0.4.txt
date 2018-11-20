@@ -1,0 +1,51 @@
+kayttaja->selain:
+note left of selain
+Käyttäjä kirjoittaa lomakkeeseen uuden viestin "Uusi viesti"
+ja painaa "Talleta" -nappia
+end note
+
+selain->palvelin: POST fullstack-exampleapp.herokuapp.com/new_note
+note left of palvelin
+Selain lähettää palvelimelle POST-kutsun lomakkeen osoittamaan polkuun
+(/new_note). Kutsun rungossa (body) lähetetään
+note: Uusi viesti
+end note
+
+palvelin->selain: 302 OK
+note left of palvelin
+Palvelin tallettaa saamansa viestin ja
+lähettää selaimelle 302-statuksen
+ja Location -headerin (/notes)...
+end note
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/notes
+note left of palvelin
+...joiden perusteella selain tekee GET-pyynnön
+(ns. uudelleenohjaus) notes-sivulle.
+end note
+palvelin->selain: 200 OK
+
+selain->palvelin: GET .../main.css
+note left of palvelin
+haetaan CSS-tiedosto
+end note
+palvelin->selain: 200 OK
+
+selain->palvelin: GET .../main.js
+note left of palvelin
+haetaan Javascript-tiedosto
+end note
+palvelin->selain: 200 OK
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/notes.json
+note left of palvelin
+Javascriptin suoritus aiheuttaa notes.json tiedoston hakemisen palvelimelta
+end note
+palvelin->selain: 200 OK
+
+note left of selain
+Selain näyttää palvelimen palauttaman HTML:n (ja lisää
+siihen JSON-tiedoston kuvaamat tiedot HTML-elementteinä).
+JSON-tiedostossa on tällä kertaa mukana käyttäjän juuri
+lähettämä viesti "Uusi viesti", joka näytetään sivulla
+(muiden viestien lisäksi).
+end note

@@ -1,0 +1,35 @@
+kayttaja->selain:
+note left of selain
+Käyttäjä kirjoittaa osoiteriville
+https://fullstack-exampleapp.herokuapp.com/spa
+end note
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/spa
+note left of palvelin
+Selain hakee pääsivun
+end note
+
+palvelin->selain: 200 OK
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/main.css
+note left of palvelin
+Selain hakee CSS-tiedoston
+end note
+palvelin->selain: 200 OK
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/spa.js
+note left of palvelin
+Selain hakee Javascript-tiedoston
+end note
+palvelin->selain: 200 OK
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/data.json
+note left of palvelin
+Javascriptin suoritus aiheuttaa data.json
+-tiedoston hakemisen palvelimelta
+end note
+palvelin->selain: 200 OK
+
+note left of selain
+Selain näyttää palvelimen palauttaman HTML:n (ja lisää
+siihen JSON-tiedoston kuvaamat tiedot HTML-elementteinä).
+end note

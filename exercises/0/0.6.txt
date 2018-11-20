@@ -1,0 +1,38 @@
+kayttaja->selain:
+note left of selain
+Käyttäjä kirjoittaa osoiteriville
+https://fullstack-exampleapp.herokuapp.com/spa
+end note
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/spa
+note left of palvelin
+Selain tekee neljä GET-pyyntöä, joilla haetaan
+pääsivu, CSS-, JS- ja notes.json -tiedostot.
+end note
+palvelin->selain: 200 OK
+note left of selain
+Selain esittää HTML-sivun.
+end note
+
+kayttaja->selain:
+note left of selain
+Käyttäjä kirjoittaa lomakkeeseen viestin
+"Turilas" ja painaa "Talleta" -nappia.
+end note
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/new_note_spa
+note left of palvelin
+Selain lähettää kirjoitetun viestin palvelimelle
+POST-pyynnön rungossa JSON-muotoisena.
+end note
+note left of palvelin
+Palvelin tallentaa viestin ja lähettää statuskoodin, jolla
+ilmoittaa selaimelle, että viesti on tallennettu onnistuneesti.
+end note
+palvelin->selain: 201 Created
+
+note left of selain
+Palvelimelle lähettämisen lisäksi selain liittää
+käyttäjän kirjoittaman viestin muiden viestien
+jatkoksi ja näyttää sen sivulla.
+end note
