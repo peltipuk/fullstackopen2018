@@ -32,6 +32,7 @@ const Kurssi = (props) => {
     <div>
       <Otsikko kurssi={props.kurssi.nimi} />
       <Sisalto osat={props.kurssi.osat} />
+      <Yhteensa osat={props.kurssi.osat} />
     </div>
   )
 }
