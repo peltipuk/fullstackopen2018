@@ -20,11 +20,7 @@ const Sisalto = (props) => (
 )
 
 const Yhteensa = (props) => {
-  let sum = 0
-  props.osat.forEach(osa => {
-    sum += osa.tehtavia
-  })
-  return <p>yhteensä {sum} tehtävää</p>
+  return <p>yhteensä {props.osat.reduce((sum, cur) => sum + cur.tehtavia, 0)} tehtävää</p>
 }
 
 const Kurssi = (props) => {
