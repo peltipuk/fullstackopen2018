@@ -13,12 +13,16 @@ class App extends React.Component {
 
   addEntry = (event) => {
     event.preventDefault();
-    this.setState(
-      {
-        persons: [...this.state.persons, { name: this.state.newName }],
-        newName: ''
-      }
-    )
+    if (this.state.persons.find(person => person.name === this.state.newName) === undefined) {
+      this.setState(
+        {
+          persons: [...this.state.persons, { name: this.state.newName }],
+          newName: ''
+        }
+      )
+    } else {
+      alert('"' + this.state.newName +'" on jo luettelossa')
+    }
   }
 
   handleInputChange = (event) => {
