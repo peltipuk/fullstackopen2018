@@ -49,40 +49,59 @@ class App extends React.Component {
     return (
       <div>
         <h2>Puhelinluettelo</h2>
-        <div>
-          rajaa näytettäviä
-          <input value={this.state.filter} onChange={this.handleFilterChange} />
-        </div>
-        <h2>Lisää uusi</h2>
-        <form onSubmit={this.addEntry}>
-          <div>
-            nimi: <input
-              value={this.state.newName}
-              onChange={this.handleNameChange} />
-          </div>
-          <div>
-            numero: <input
-              value={this.state.newNumber}
-              onChange={this.handleNumberChange} />
-          </div>
-          <div>
-            <button type="submit">lisää</button>
-          </div>
-        </form>
+        <FilterForm filter={this.state.filter} onChange={this.handleFilterChange} />
+        <AddEntryForm
+          onSubmit={this.addEntry}
+          newName={this.state.newName}
+          handleNameChange={this.handleNameChange}
+          newNumber={this.state.newNumber}
+          handleNumberChange={this.handleNumberChange}
+        />
         <h2>Numerot</h2>
         <table>
           <tbody>
-            {personsToShow.map((person) => (
-              <tr key={person.name}>
-                <td>{person.name}</td>
-                <td>{person.number}</td>
-              </tr>
-            ))}
+            {personsToShow.map((person) => <PhoneCatalogEntry key={person.name} person={person} />)}
           </tbody>
         </table>
       </div>
     )
   }
 }
+
+const AddEntryForm = ({ onSubmit, newName, handleNameChange, newNumber, handleNumberChange }) => (
+  <div>
+    <h2>Lisää uusi</h2>
+    <form onSubmit={onSubmit}>
+      <div>
+        nimi: <input
+          value={newName}
+          onChange={handleNameChange} />
+      </div>
+      <div>
+        numero: <input
+          value={newNumber}
+          onChange={handleNumberChange} />
+      </div>
+      <div>
+        <button type="submit">lisää</button>
+      </div>
+    </form>
+  </div>
+)
+
+const FilterForm = ({ filter, onChange }) => (
+  <div>
+    rajaa näytettäviä
+    <input value={filter} onChange={onChange} />
+  </div>
+)
+
+const PhoneCatalogEntry = ({ person }) => (
+  <tr key={person.name}>
+    <td>{person.name}</td>
+    <td>{person.number}</td>
+  </tr>
+)
+
 
 export default App
