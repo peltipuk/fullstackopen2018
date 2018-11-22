@@ -29,6 +29,11 @@
       "name": "Sean Connery",
       "number": "023-541231",
       "id": 6
+    },
+    {
+      "name": "Timothy Dalton",
+      "number": "040-514123",
+      "id": 7
     }
   ]
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from 'axios'
+import personsService from '../services/persons'
 
 class App extends React.Component {
   constructor(props) {
@@ -14,28 +14,25 @@ class App extends React.Component {
 
   componentDidMount = () => {
     console.log('componentDidMount')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('GET completed')
-        this.setState({ persons: response.data })
+    personsService.getAll()
+      .then(persons => {
+        this.setState({ persons: persons })
       })
-
   }
 
   addEntry = (event) => {
     event.preventDefault();
     if (this.state.persons.find(person => person.name === this.state.newName) === undefined) {
-      console.log('Making POST request')
-      axios
-        .post('http://localhost:3001/persons', { name: this.state.newName, number: this.state.newNumber })
-        .then(response => {
-          console.log('Got response data:', response.data)
+      console.log('GETting all persons')
+      personsService.create({ name: this.state.newName, number: this.state.newNumber })
+        .then(newPerson => {
+          console.log('Created new person: ', newPerson)
           this.setState(
             {
-              persons: [...this.state.persons, response.data ],
+              persons: [...this.state.persons, newPerson],
               newName: '',
               newNumber: ''
+
             })
         })
     } else {
