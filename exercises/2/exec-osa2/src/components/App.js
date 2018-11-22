@@ -52,6 +52,18 @@ class App extends React.Component {
     this.setState({ filter: event.target.value })
   }
 
+  handleRemoveClick = (id, name) => () => {
+    if (window.confirm(`Delete '${name}'`)) {
+      console.log(`Removing person with id ${id}`)
+      personsService.remove(id).then(response => {
+        console.log('Delete response status: ', response.status)
+      })
+      this.setState({ persons: this.state.persons.filter(person => person.id !== id) })
+    } else {
+      console.log(`Cancelled deleting of ${name}`)
+    }
+  }
+
   render() {
     const personsToShow = this.state.persons.filter(person => person.name.toLowerCase().indexOf(this.state.filter.toLowerCase()) >= 0)
 
@@ -69,7 +81,11 @@ class App extends React.Component {
         <h2>Numerot</h2>
         <table>
           <tbody>
-            {personsToShow.map((person) => <PhoneCatalogEntry key={person.name} person={person} />)}
+            {personsToShow.map((person) =>
+              <PhoneCatalogEntry
+                key={person.name}
+                person={person}
+                clickHandler={this.handleRemoveClick(person.id, person.name)} />)}
           </tbody>
         </table>
       </div>
@@ -105,10 +121,16 @@ const FilterForm = ({ filter, onChange }) => (
   </div>
 )
 
-const PhoneCatalogEntry = ({ person }) => (
+const PhoneCatalogEntry = ({ person, clickHandler }) => (
   <tr key={person.name}>
     <td>{person.name}</td>
     <td>{person.number}</td>
+    <td>
+      <button
+        onClick={clickHandler}>
+        poista
+        </button>
+    </td>
   </tr>
 )
 
