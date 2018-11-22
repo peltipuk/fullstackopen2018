@@ -19,6 +19,16 @@
       "name": "Lea Kutvonen",
       "number": "040-123456",
       "id": 4
+    },
+    {
+      "name": "Roger Moore",
+      "number": "050-624234",
+      "id": 5
+    },
+    {
+      "name": "Sean Connery",
+      "number": "023-541231",
+      "id": 6
     }
   ]
 }

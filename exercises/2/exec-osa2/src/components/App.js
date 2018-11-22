@@ -20,19 +20,24 @@ class App extends React.Component {
         console.log('GET completed')
         this.setState({ persons: response.data })
       })
-      
+
   }
 
   addEntry = (event) => {
     event.preventDefault();
     if (this.state.persons.find(person => person.name === this.state.newName) === undefined) {
-      this.setState(
-        {
-          persons: [...this.state.persons, { name: this.state.newName, number: this.state.newNumber }],
-          newName: '',
-          newNumber: ''
-        }
-      )
+      console.log('Making POST request')
+      axios
+        .post('http://localhost:3001/persons', { name: this.state.newName, number: this.state.newNumber })
+        .then(response => {
+          console.log('Got response data:', response.data)
+          this.setState(
+            {
+              persons: [...this.state.persons, response.data ],
+              newName: '',
+              newNumber: ''
+            })
+        })
     } else {
       alert('"' + this.state.newName + '" on jo luettelossa')
     }
