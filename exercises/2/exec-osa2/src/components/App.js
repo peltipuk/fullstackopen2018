@@ -1,6 +1,8 @@
 import React from 'react'
 import personsService from '../services/persons'
 
+const notificationDelay = 3000
+
 class App extends React.Component {
   constructor(props) {
     super(props)
@@ -8,7 +10,8 @@ class App extends React.Component {
       persons: [],
       newName: '',
       newNumber: '',
-      filter: ''
+      filter: '',
+      notificationMessage: 'Initial message'
     }
   }
 
@@ -18,6 +21,12 @@ class App extends React.Component {
       .then(persons => {
         this.setState({ persons: persons })
       })
+  }
+
+  clearNotification = (delay) => {
+    setTimeout(() => {
+      this.setState({ notificationMessage: null })
+    }, delay);
   }
 
   addEntry = (event) => {
@@ -32,9 +41,11 @@ class App extends React.Component {
             {
               persons: [...this.state.persons, newPerson],
               newName: '',
-              newNumber: ''
-
-            })
+              newNumber: '',
+              notificationMessage: `lisättiin ${newPerson.name}`
+            }
+          )
+          this.clearNotification(notificationDelay)
         })
     } else {
       if (window.confirm(`${this.state.newName} on jo luettelossa, korvataanko vanha numero uudella?`)) {
@@ -46,9 +57,11 @@ class App extends React.Component {
               {
                 persons: [...this.state.persons.filter(person => person.id !== updatedPerson.id), updatedPerson],
                 newName: '',
-                newNumber: ''
+                newNumber: '',
+                notificationMessage: `${updatedPerson.name}: numero muutettu`
               }
             )
+            this.clearNotification(notificationDelay)
           })
       } else {
         console.log(`Cancelled updating of ${this.state.newName}`)
@@ -74,7 +87,13 @@ class App extends React.Component {
       personsService.remove(id).then(response => {
         console.log('Delete response status: ', response.status)
       })
-      this.setState({ persons: this.state.persons.filter(person => person.id !== id) })
+      this.setState(
+        {
+          persons: this.state.persons.filter(person => person.id !== id),
+          notificationMessage: `poistettiin ${name}`
+        }
+      )
+      this.clearNotification(notificationDelay)
     } else {
       console.log(`Cancelled deleting of ${name}`)
     }
@@ -86,6 +105,7 @@ class App extends React.Component {
     return (
       <div>
         <h2>Puhelinluettelo</h2>
+        <Notification message={this.state.notificationMessage} />
         <FilterForm filter={this.state.filter} onChange={this.handleFilterChange} />
         <AddEntryForm
           onSubmit={this.addEntry}
@@ -107,6 +127,15 @@ class App extends React.Component {
       </div>
     )
   }
+}
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+  return (
+    <div className='notification'>{message}</div>
+  )
 }
 
 const AddEntryForm = ({ onSubmit, newName, handleNameChange, newNumber, handleNumberChange }) => (
