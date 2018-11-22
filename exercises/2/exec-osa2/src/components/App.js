@@ -11,7 +11,7 @@ class App extends React.Component {
       newName: '',
       newNumber: '',
       filter: '',
-      notificationMessage: 'Initial message'
+      notificationMessage: null,
     }
   }
 
@@ -20,7 +20,8 @@ class App extends React.Component {
     personsService.getAll()
       .then(persons => {
         this.setState({ persons: persons })
-      })
+      }
+      )
   }
 
   clearNotification = (delay) => {
@@ -29,24 +30,29 @@ class App extends React.Component {
     }, delay);
   }
 
+  createNewPerson = () => {
+    console.log('Creating person')
+    return personsService.create({ name: this.state.newName, number: this.state.newNumber })
+      .then(newPerson => {
+        console.log('Created new person: ', newPerson)
+        this.setState(
+          {
+            persons: [...this.state.persons, newPerson],
+            newName: '',
+            newNumber: '',
+            notificationMessage: `lisättiin ${newPerson.name}`
+          }
+        )
+        this.clearNotification(notificationDelay)
+      })
+  }
+
   addEntry = (event) => {
     event.preventDefault();
     const personToUpdate = this.state.persons.find(person => person.name === this.state.newName)
     if (personToUpdate === undefined) {
-      console.log('GETting all persons')
-      personsService.create({ name: this.state.newName, number: this.state.newNumber })
-        .then(newPerson => {
-          console.log('Created new person: ', newPerson)
-          this.setState(
-            {
-              persons: [...this.state.persons, newPerson],
-              newName: '',
-              newNumber: '',
-              notificationMessage: `lisättiin ${newPerson.name}`
-            }
-          )
-          this.clearNotification(notificationDelay)
-        })
+      const promise = this.createNewPerson()
+      console.log('createNewPerson() return promise: ', promise)
     } else {
       if (window.confirm(`${this.state.newName} on jo luettelossa, korvataanko vanha numero uudella?`)) {
         personsService
@@ -62,6 +68,17 @@ class App extends React.Component {
               }
             )
             this.clearNotification(notificationDelay)
+          })
+          .catch(err => {
+            // In reality a bit more sophisticated error handling is required (checking of response status etc.)
+            // Remove the (presumably missing from database) person from the state
+            this.setState({
+              persons: this.state.persons.filter(person => person.name !== personToUpdate.name)
+            })
+
+            console.log(`Could not update ${personToUpdate.name}: creating instead`)
+            const promise = this.createNewPerson()
+            console.log('createNewPerson() return promise: ', promise)
           })
       } else {
         console.log(`Cancelled updating of ${this.state.newName}`)
@@ -86,14 +103,14 @@ class App extends React.Component {
       console.log(`Removing person with id ${id}`)
       personsService.remove(id).then(response => {
         console.log('Delete response status: ', response.status)
+        this.setState(
+          {
+            persons: this.state.persons.filter(person => person.id !== id),
+            notificationMessage: `poistettiin ${name}`
+          }
+        )
+        this.clearNotification(notificationDelay)
       })
-      this.setState(
-        {
-          persons: this.state.persons.filter(person => person.id !== id),
-          notificationMessage: `poistettiin ${name}`
-        }
-      )
-      this.clearNotification(notificationDelay)
     } else {
       console.log(`Cancelled deleting of ${name}`)
     }
@@ -119,12 +136,12 @@ class App extends React.Component {
           <tbody>
             {personsToShow.map((person) =>
               <PhoneCatalogEntry
-                key={person.name}
+                key={person.name + person.number}
                 person={person}
                 clickHandler={this.handleRemoveClick(person.id, person.name)} />)}
           </tbody>
         </table>
-      </div>
+      </div >
     )
   }
 }
@@ -140,7 +157,7 @@ const Notification = ({ message }) => {
 
 const AddEntryForm = ({ onSubmit, newName, handleNameChange, newNumber, handleNumberChange }) => (
   <div>
-    <h2>Lisää uusi</h2>
+    <h2>Lisää uusi / muuta olemassaolevan numeroa</h2>
     <form onSubmit={onSubmit}>
       <div>
         nimi: <input
@@ -178,6 +195,5 @@ const PhoneCatalogEntry = ({ person, clickHandler }) => (
     </td>
   </tr>
 )
-
 
 export default App
