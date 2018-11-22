@@ -22,7 +22,8 @@ class App extends React.Component {
 
   addEntry = (event) => {
     event.preventDefault();
-    if (this.state.persons.find(person => person.name === this.state.newName) === undefined) {
+    const personToUpdate = this.state.persons.find(person => person.name === this.state.newName)
+    if (personToUpdate === undefined) {
       console.log('GETting all persons')
       personsService.create({ name: this.state.newName, number: this.state.newNumber })
         .then(newPerson => {
@@ -36,7 +37,22 @@ class App extends React.Component {
             })
         })
     } else {
-      alert('"' + this.state.newName + '" on jo luettelossa')
+      if (window.confirm(`${this.state.newName} on jo luettelossa, korvataanko vanha numero uudella?`)) {
+        personsService
+          .update(personToUpdate.id, { ...personToUpdate, number: this.state.newNumber })
+          .then(updatedPerson => {
+            console.log('Updated resource:', updatedPerson)
+            this.setState(
+              {
+                persons: [...this.state.persons.filter(person => person.id !== updatedPerson.id), updatedPerson],
+                newName: '',
+                newNumber: ''
+              }
+            )
+          })
+      } else {
+        console.log(`Cancelled updating of ${this.state.newName}`)
+      }
     }
   }
 
