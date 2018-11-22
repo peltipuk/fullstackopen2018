@@ -25,15 +25,25 @@ class App extends React.Component {
     this.setState({ filter: event.target.value })
   }
 
+  handleCountryClick = (countryName) => () => {
+    this.setState({ filter: countryName })
+  }
+
   renderCountries() {
-    const countries = this.state.allCountries.filter(country => country.name.toLowerCase().indexOf(this.state.filter) >= 0)
+    console.log('Filter:', this.state.filter)
+    const countries = this.state.allCountries.filter(country => country.name.toLowerCase().indexOf(this.state.filter.toLowerCase()) >= 0)
     console.log('filter produced', countries.length, 'matches')
-    if(countries.length === 0 || this.state.filter === '') {
+    if (countries.length === 0 || this.state.filter === '') {
       return null
-    } else if(countries.length === 1) {
+    } else if (countries.length === 1) {
       return <Country country={countries[0]} />
-    } else if(countries.length <= 10) {
-      return countries.map(country => <div key={country.name}>{country.name}</div>)
+    } else if (countries.length <= 10) {
+      return countries.map(country =>
+        <div
+          key={country.name}
+          onClick={this.handleCountryClick(country.name)}>
+          {country.name}
+        </div>)
     } else {
       return 'too many matches, specify another filter'
     }
@@ -56,12 +66,12 @@ class App extends React.Component {
   }
 }
 
-const Country = ( {country} ) => (
+const Country = ({ country }) => (
   <div>
     <h2>{country.name} {country.nativeName}</h2>
     <div>capital: {country.capital}</div>
     <div>population: {country.population}</div>
-    <img src={country.flag} alt={'Flag of ' + country.name} width='200' height='120'/>
+    <img src={country.flag} alt={'Flag of ' + country.name} width='200' height='120' />
   </div>
 )
 
